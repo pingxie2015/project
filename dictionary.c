@@ -41,6 +41,8 @@ void insert_node(dic_node *head, char *str)
             temp->cur = *str;
             str ++;
        }
+       else
+           break;
     }
     temp->complete = true;
 }
@@ -64,22 +66,21 @@ bool find_word(dic_node *head, const char *str)
                return false;
            str++;
        }
-       return temp->complete;
-    }while (*str != 0);
+    }while (*str != '\0');
+    return temp->complete;
 }
 
 bool get_words_from_file(const char *path, dic_node *head)
 {
     FILE *fp = fopen(path, "rb");
-    int i = 0;
     char buf[128];
     if(fp != NULL)
     {
-        while(i<1000 && !feof(fp))
+        while(!feof(fp))
         {
             if(fgets(buf, sizeof(buf), fp))
             {
-                printf("%d: %s", i++, buf);
+                //printf("%d: %s", i++, buf);
                 insert_node(head, buf);
             }
 	    }
@@ -102,9 +103,7 @@ void release_nodes(dic_node *head)
        {
            release_nodes(head->childs[i]);
        }
-       
-       free(head);
-       head = NULL; 
-
+      
    }
+   free(head);
 }
