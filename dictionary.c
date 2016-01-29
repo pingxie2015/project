@@ -6,8 +6,6 @@ int char_to_int(char ch)
         return ch-'a';
     else if((ch >= 'A') && (ch <= 'Z'))
         return ch-'A';
-    else if(ch == '\'')
-        return 26;
     return -1;
 }
 
@@ -66,8 +64,40 @@ bool find_word(dic_node *head, const char *str)
                return false;
            str++;
        }
+       else
+           return false;
     }while (*str != '\0');
     return temp->complete;
+}
+
+//if find word, mark it as read, so as not to print repeated words
+bool find_word_and_mark_read(dic_node *head, const char *str)
+{
+    if((head == NULL) || (str == NULL))
+    {
+        return false;
+    }
+    dic_node* temp = head;
+    int index;
+    do
+    {
+       index = char_to_int(*str);
+       if( index != -1) 
+       {
+           temp = temp->childs[index];
+           if (temp == NULL)
+               return false;
+           str++;
+       }
+       else
+           return false;
+    }while (*str != '\0');
+    if(temp->complete)
+    {
+        temp->complete = false;
+        return true;
+    }
+    return false;
 }
 
 bool get_words_from_file(const char *path, dic_node *head)

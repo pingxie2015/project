@@ -6,35 +6,46 @@
 
 void travel(char grid[4][4],int x,int y, dic_node *head, char *str, bool flag[4][4])  
 {  
-    if ( x<0 ||x>= GRID_SIZE ||y<0||y>=GRID_SIZE||flag[x][y])  
+    if ( x<0 ||x>= GRID_SIZE ||y<0||y>=GRID_SIZE)  
+    {
         return; 
+    }
     bool find =false;
+    int i,j;
+    char buf[16];
+    memcpy(buf, str, sizeof(buf));
     strncat(str, &grid[x][y], 1);
     flag[x][y] = true;
-    find = find_word(head, str);
+    find = find_word_and_mark_read(head, str);
     if(find)
-        printf("%s\n", str);
-  /*  printf("%s\n", str);
+        printf("find %s\n", str);
+//    printf("x=%d, y=%d, str=%s\n", x,y,str);
+//    search the neighbors for possible output
+    for(i=1; i>-2; i--)
     {
-        int i,j;
-        for(i=0; i<4; i++)
+        for(j=1; j>-2; j--)
         {
-            for(j=0; j<4; j++)
+            if(!(i==0 && j==0))
             {
-                printf("%d",flag[i][j]);
-
+                if(!flag[x-i][y-j])
+                {
+                    travel(grid, x-i,y-j,head,str,flag);        
+                }
             }
-            printf("\n");
         }
-    }*/ 
-    travel(grid,x+1,y,head,str,flag);
-    travel(grid,x-1,y,head,str,flag);
+    }
+    memcpy(str,buf,sizeof(buf));
+    flag[x][y] = false;
+/*
     travel(grid,x,y+1,head,str,flag);
-    travel(grid,x,y-1,head,str,flag);  
+    travel(grid,x+1,y,head,str,flag);
+    travel(grid,x,y-1,head,str,flag);
+    travel(grid,x-1,y,head,str,flag);  
     travel(grid,x+1,y+1,head,str,flag);
-    travel(grid,x-1,y+1,head,str,flag);
-    travel(grid,x-1,y+1,head,str,flag);
     travel(grid,x+1,y-1,head,str,flag);  
+    travel(grid,x-1,y+1,head,str,flag);
+    travel(grid,x-1,y-1,head,str,flag);  
+*/
 } 
 
 int main(int argc, char *argv[])
@@ -59,7 +70,6 @@ int main(int argc, char *argv[])
         {
             grid[i][j] = *str;
             str ++;
-            
         }
     }
     for(i=0; i<4; i++)
